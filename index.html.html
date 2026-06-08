@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MedProc · U. de Chile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#003087;--brand2:#0050c8;--brand-light:#e8eef9;--brand-mid:#1a4fa8;
+  --teal:#0a7c5c;--teal-light:#e6f4f0;
+  --amber:#b85c00;--amber-light:#fff3e6;
+  --purple:#5b3ea6;--purple-light:#f0ecfb;
+  --red:#c0392b;--red-light:#fdf2f1;
+  --surf:#ffffff;--surf2:#f4f6fb;--surf3:#eaecf2;
+  --border:rgba(0,48,135,0.11);
+  --txt:#0d1520;--txt2:#3d4a5c;--txt3:#7a8799;
+  --font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;
+  --r:8px;--rl:14px
+}
+body{font-family:var(--font);background:var(--surf2);color:var(--txt);font-size:14px;min-height:100vh}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+#scr-login{background:var(--brand);align-items:center;justify-content:center;padding:2rem}
+.lcard{background:var(--surf);border-radius:18px;padding:2.25rem;width:100%;max-width:370px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.lhead{display:flex;align-items:center;gap:10px;margin-bottom:1.75rem}
+.lhead-icon{width:38px;height:38px;background:var(--brand);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.lhead-icon i{font-size:20px;color:#fff}
+.lhead-text b{display:block;font-size:15px;font-weight:600;color:var(--brand)}
+.lhead-text span{font-size:11px;color:var(--txt3);letter-spacing:.04em}
+.lcard h2{font-size:20px;font-weight:600;margin-bottom:.2rem}
+.lcard p{color:var(--txt2);font-size:13px;margin-bottom:1.5rem}
+.field{margin-bottom:.9rem}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--txt3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+.field input,.field select,.field textarea{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--font);font-size:14px;background:var(--surf);color:var(--txt);outline:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand)}
+.field textarea{resize:vertical;min-height:60px}
+.btn{padding:9px 16px;background:var(--brand);color:#fff;border:none;border-radius:var(--r);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:background .15s,transform .1s;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{background:var(--brand2)}.btn:active{transform:scale(.98)}
+.btn.full{width:100%;justify-content:center}
+.btn.sec{background:var(--surf3);color:var(--txt2);border:1.5px solid var(--border)}.btn.sec:hover{background:var(--surf2)}
+.btn.sm{padding:6px 11px;font-size:12px}
+.btn.teal{background:var(--teal)}.btn.teal:hover{background:#086349}
+.btn.amber{background:var(--amber)}.btn.amber:hover{background:#9a4f00}
+.btn.danger{background:var(--red-light);color:var(--red);border:1px solid rgba(192,57,43,.2)}.btn.danger:hover{background:#fce8e6}
+.err{background:var(--red-light);color:var(--red);border-radius:var(--r);padding:8px 11px;font-size:13px;margin-bottom:.9rem;display:none;align-items:center;gap:6px}
+.topbar{background:var(--surf);border-bottom:1px solid var(--border);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.tbar-logo{display:flex;align-items:center;gap:9px}
+.tbar-icon{width:28px;height:28px;background:var(--brand);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.tbar-icon i{font-size:15px;color:#fff}
+.tbar-title{font-size:13px;font-weight:600;color:var(--brand);line-height:1.2}
+.tbar-sub{font-size:10px;color:var(--txt3);letter-spacing:.03em}
+.tbar-right{display:flex;align-items:center;gap:10px}
+.upill{display:flex;align-items:center;gap:7px;background:var(--surf2);border:1px solid var(--border);border-radius:20px;padding:4px 10px 4px 5px;font-size:12px}
+.uav{width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600}
+.logout{font-size:11px;color:var(--txt3);cursor:pointer;border:none;background:none;font-family:var(--font)}.logout:hover{color:var(--red)}
+.main{padding:1.25rem;flex:1;max-width:940px;margin:0 auto;width:100%}
+.tabs{display:flex;gap:3px;background:var(--surf3);padding:3px;border-radius:11px;margin-bottom:1.25rem}
+.tab{flex:1;text-align:center;padding:7px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:500;color:var(--txt2);border:none;background:none;font-family:var(--font);transition:all .15s}
+.tab.on{background:var(--surf);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.nav-tabs{display:flex;gap:3px;background:var(--surf3);padding:3px;border-radius:11px;margin-bottom:1.25rem;overflow-x:auto}
+.nav-tab{padding:7px 12px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:500;color:var(--txt2);white-space:nowrap;border:none;background:none;font-family:var(--font);transition:all .15s}
+.nav-tab.on{background:var(--surf);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.card{background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);padding:1.1rem 1.25rem;margin-bottom:1rem}
+.card h3{font-size:13px;font-weight:600;color:var(--txt);margin-bottom:.9rem;display:flex;align-items:center;gap:6px}
+.card h3 i{font-size:16px;color:var(--brand)}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:9px;margin-bottom:1rem}
+.scard{background:var(--surf2);border-radius:var(--r);padding:.9rem}
+.slabel{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.sval{font-size:24px;font-weight:600;color:var(--brand);font-family:var(--mono);line-height:1}
+.ssub{font-size:11px;color:var(--txt3);margin-top:3px}
+.plist{display:flex;flex-direction:column;gap:7px}
+.pitem{border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;display:flex;align-items:flex-start;gap:10px;background:var(--surf)}
+.pdot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.pinfo{flex:1;min-width:0}
+.pname{font-weight:500;font-size:13px;color:var(--txt)}
+.pmeta{font-size:11px;color:var(--txt3);margin-top:2px}
+.pmeta b{color:var(--txt2)}
+.pnotes{font-size:11px;color:var(--txt2);margin-top:4px;font-style:italic;background:var(--surf2);border-radius:6px;padding:4px 8px}
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:500}
+.b-blue{background:var(--brand-light);color:var(--brand-mid)}
+.b-teal{background:var(--teal-light);color:var(--teal)}
+.b-amber{background:var(--amber-light);color:var(--amber)}
+.b-purple{background:var(--purple-light);color:var(--purple)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.factions{display:flex;gap:7px;margin-top:.9rem;flex-wrap:wrap}
+.bchart{margin-top:.25rem}
+.brow{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.blabel{font-size:11px;color:var(--txt2);width:150px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btrack{flex:1;background:var(--surf3);border-radius:4px;height:18px;overflow:hidden}
+.bfill{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:7px;font-size:10px;font-weight:600;color:#fff;min-width:24px;transition:width .5s ease}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.dtable th{padding:7px 8px;text-align:left;font-size:10px;font-weight:500;color:var(--txt3);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border);background:var(--surf2)}
+.dtable td{padding:8px 8px;border-bottom:1px solid var(--border);color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dtable tr:last-child td{border-bottom:none}.dtable tr:hover td{background:var(--surf2)}
+.fbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1rem}
+.fbar select,.fbar input{padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;font-family:var(--font);font-size:12px;background:var(--surf);color:var(--txt);outline:none}
+.fbar select:focus,.fbar input:focus{border-color:var(--brand)}
+.empty{text-align:center;padding:2rem 1rem;color:var(--txt3)}
+.empty i{font-size:2rem;margin-bottom:.5rem;display:block}
+.stitle{font-size:16px;font-weight:600;margin-bottom:1rem;color:var(--txt)}
+.stitle small{font-size:12px;font-weight:400;color:var(--txt3);margin-left:6px}
+.row-flex{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.row-flex:last-child{border-bottom:none}
+.bav{width:32px;height:32px;border-radius:50%;background:var(--brand-light);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+.tag-c{display:inline-block;padding:1px 7px;border-radius:20px;font-size:10px;font-weight:600;background:var(--brand-light);color:var(--brand-mid);font-family:var(--mono)}
+.infobox{background:var(--brand-light);border-radius:var(--r);padding:.75rem 1rem;font-size:12px;color:var(--brand-mid);margin-bottom:1rem;display:flex;gap:8px;align-items:flex-start}
+.infobox i{flex-shrink:0;font-size:15px;margin-top:1px}
+.export-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1rem}
+.export-card{border:1px solid var(--border);border-radius:var(--r);padding:1rem;display:flex;flex-direction:column;gap:8px;background:var(--surf)}
+.export-card h4{font-size:13px;font-weight:600;color:var(--txt);display:flex;align-items:center;gap:6px}
+.export-card h4 i{color:var(--brand);font-size:15px}
+.export-card p{font-size:11px;color:var(--txt3);line-height:1.5}
+.toast{position:fixed;bottom:1.25rem;right:1.25rem;background:var(--teal);color:#fff;padding:10px 16px;border-radius:11px;font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .28s;z-index:9999;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;z-index:9998;flex-direction:column;gap:12px;font-size:13px;color:var(--txt2)}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pass-cell{font-family:var(--mono);font-size:11px;background:var(--surf2);padding:2px 7px;border-radius:5px;letter-spacing:.05em;cursor:pointer;border:1px solid var(--border);display:inline-flex;align-items:center;gap:4px}
+.pass-cell:hover{background:var(--brand-light);border-color:var(--brand-mid)}
+</style>
+</head>
+<body>
+
+<div id="loading-overlay" class="loading-overlay">
+  <div class="spinner"></div>
+  <span>Conectando con la base de datos...</span>
+</div>
+
+<div id="scr-login" class="screen">
+  <div class="lcard">
+    <div class="lhead">
+      <div class="lhead-icon"><i class="ti ti-stethoscope"></i></div>
+      <div class="lhead-text">
+        <b>MedProc · U. de Chile</b>
+        <span>Programa T. E. Medicina Interna</span>
+      </div>
+    </div>
+    <h2>Bienvenido/a</h2>
+    <p>Ingresa con tus credenciales</p>
+    <div id="lerr" class="err"><i class="ti ti-alert-circle"></i><span id="lerr-msg">Usuario o contraseña incorrectos</span></div>
+    <div class="field"><label>Usuario</label><input type="text" id="lu" placeholder="ej: nquinteros" autocomplete="username"/></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="lp" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <button class="btn full" id="login-btn" onclick="doLogin()"><i class="ti ti-login"></i>Ingresar</button>
+  </div>
+</div>
+
+<div id="scr-becado" class="screen" style="background:var(--surf2)">
+  <div class="topbar">
+    <div class="tbar-logo">
+      <div class="tbar-icon"><i class="ti ti-stethoscope"></i></div>
+      <div><div class="tbar-title">MedProc</div><div class="tbar-sub">U. DE CHILE · MEDICINA INTERNA</div></div>
+    </div>
+    <div class="tbar-right">
+      <div class="upill"><div class="uav" id="bav-top">--</div><span id="bname-top">Becado</span></div>
+      <button class="logout" onclick="logout()">Salir</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="tabs">
+      <button class="tab on" onclick="btab('reg',this)"><i class="ti ti-plus" style="font-size:13px"></i> Registrar</button>
+      <button class="tab" onclick="btab('hist',this)"><i class="ti ti-list" style="font-size:13px"></i> Mi historial</button>
+    </div>
+    <div id="bt-reg">
+      <div class="card">
+        <h3><i class="ti ti-clipboard-plus"></i>Nuevo procedimiento</h3>
+        <div class="fgrid">
+          <div class="field"><label>Procedimiento</label>
+            <select id="f-tipo"><option value="">Seleccionar...</option>
+              <option>Toracocentesis</option><option>Paracentesis</option>
+              <option>Punción lumbar</option><option>Catéter venoso central</option>
+              <option>Intubación orotraqueal</option><option>Línea arterial</option><option>Otro</option>
+            </select></div>
+          <div class="field"><label>Lugar de realización</label>
+            <select id="f-lugar"><option value="">Seleccionar...</option>
+              <option>Hospital Clínico San Borja Arriarán</option>
+              <option>Hospital Del Salvador</option>
+              <option>Hospital San Juan de Dios</option>
+              <option>Hospital Barros Luco</option>
+              <option>Hospital Clínico Universidad de Chile</option>
+              <option>Hospital Luis Tisné</option>
+              <option>Instituto Nacional del Tórax</option>
+              <option>Instituto Nacional de Geriatría</option>
+              <option>Otro</option>
+            </select></div>
+          <div class="field"><label>Fecha</label><input type="date" id="f-fecha"/></div>
+          <div class="field"><label>Iniciales del paciente</label>
+            <input type="text" id="f-paciente" placeholder="Ej: J.G.M." maxlength="10" style="text-transform:uppercase"/></div>
+        </div>
+        <div class="field"><label>Staff supervisor</label><input type="text" id="f-supervisor" placeholder="Nombre del médico supervisor"/></div>
+        <div class="field"><label>Notas clínicas (opcional)</label><textarea id="f-notas" placeholder="Observaciones relevantes..."></textarea></div>
+        <div class="factions">
+          <button class="btn" onclick="registrar()"><i class="ti ti-device-floppy"></i>Registrar</button>
+          <button class="btn sec sm" onclick="limpiarForm()">Limpiar</button>
+        </div>
+      </div>
+      <div class="card"><h3><i class="ti ti-chart-bar"></i>Mi resumen</h3><div class="sgrid" id="b-stats"></div></div>
+    </div>
+    <div id="bt-hist" style="display:none">
+      <div class="stitle">Mi historial <small id="hist-c"></small></div>
+      <div class="fbar">
+        <select id="hf-tipo" onchange="renderHist()"><option value="">Todos los procedimientos</option><option>Toracocentesis</option><option>Paracentesis</option><option>Punción lumbar</option><option>Catéter venoso central</option><option>Intubación orotraqueal</option><option>Línea arterial</option><option>Otro</option></select>
+        <select id="hf-year" onchange="renderHist()"><option value="">Todos los años</option></select>
+      </div>
+      <div id="hist-list" class="plist"></div>
+    </div>
+  </div>
+</div>
+
+<div id="scr-coord" class="screen" style="background:var(--surf2)">
+  <div class="topbar">
+    <div class="tbar-logo">
+      <div class="tbar-icon"><i class="ti ti-stethoscope"></i></div>
+      <div><div class="tbar-title">MedProc · Coordinación</div><div class="tbar-sub">U. DE CHILE · MEDICINA INTERNA</div></div>
+    </div>
+    <div class="tbar-right">
+      <div class="upill"><div class="uav" style="background:var(--purple)" id="cav-top">--</div><span id="cname-top">Coordinador</span></div>
+      <button class="logout" onclick="logout()">Salir</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="nav-tabs">
+      <button class="nav-tab on" onclick="ctab('general',this)">Visión general</button>
+      <button class="nav-tab" onclick="ctab('becados',this)">Por becado</button>
+      <button class="nav-tab" onclick="ctab('sedes',this)">Por sede</button>
+      <button class="nav-tab" onclick="ctab('procedimientos',this)">Por procedimiento</button>
+      <button class="nav-tab" onclick="ctab('detalle',this)">Registros</button>
+      <button class="nav-tab" onclick="ctab('exportar',this)"><i class="ti ti-download" style="font-size:12px"></i> Exportar</button>
+      <button class="nav-tab" onclick="ctab('usuarios',this)"><i class="ti ti-settings" style="font-size:12px"></i> Gestión</button>
+    </div>
+
+    <div id="ct-general">
+      <div class="sgrid" id="cg-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="card"><h3><i class="ti ti-chart-bar"></i>Por procedimiento</h3><div class="bchart" id="cg-tipos"></div></div>
+        <div class="card"><h3><i class="ti ti-building-hospital"></i>Por sede de formación</h3><div class="bchart" id="cg-sedes"></div></div>
+      </div>
+      <div class="card"><h3><i class="ti ti-trending-up"></i>Evolución por año</h3>
+        <div style="position:relative;width:100%;height:200px"><canvas id="ch-anual"></canvas></div>
+      </div>
+    </div>
+
+    <div id="ct-becados" style="display:none">
+      <div class="fbar">
+        <select id="cf-cohorte" onchange="renderBecado()"><option value="">Todas las cohortes</option></select>
+        <select id="cf-sede-b" onchange="renderBecado()"><option value="">Todas las sedes</option></select>
+        <select id="cf-becado" onchange="renderBecadoDetalle()"><option value="">Seleccionar becado...</option></select>
+      </div>
+      <div id="cb-lista"></div><div id="cb-detalle"></div>
+    </div>
+
+    <div id="ct-sedes" style="display:none">
+      <div class="card"><h3><i class="ti ti-building-hospital"></i>Procedimientos por sede</h3><div class="bchart" id="cs-chart"></div></div>
+      <div class="card"><h3><i class="ti ti-users"></i>Becados por sede</h3><div id="cs-table"></div></div>
+    </div>
+
+    <div id="ct-procedimientos" style="display:none">
+      <div class="fbar">
+        <select id="cp-cohorte" onchange="renderProcs()"><option value="">Todas las cohortes</option></select>
+        <select id="cp-sede" onchange="renderProcs()"><option value="">Todas las sedes</option></select>
+      </div>
+      <div class="card"><h3><i class="ti ti-list-details"></i>Distribución por tipo</h3><div class="bchart" id="cp-chart"></div></div>
+      <div class="card"><h3><i class="ti ti-chart-bar"></i>Por procedimiento y becado</h3>
+        <div style="position:relative;width:100%;height:260px"><canvas id="ch-grouped"></canvas></div>
+      </div>
+    </div>
+
+    <div id="ct-detalle" style="display:none">
+      <div class="fbar">
+        <select id="df-becado" onchange="renderDetalle()"><option value="">Todos los becados</option></select>
+        <select id="df-tipo" onchange="renderDetalle()"><option value="">Todos los procedimientos</option><option>Toracocentesis</option><option>Paracentesis</option><option>Punción lumbar</option><option>Catéter venoso central</option><option>Intubación orotraqueal</option><option>Línea arterial</option><option>Otro</option></select>
+        <select id="df-year" onchange="renderDetalle()"><option value="">Todos los años</option></select>
+        <select id="df-cohorte" onchange="renderDetalle()"><option value="">Todas las cohortes</option></select>
+      </div>
+      <div id="det-list" class="plist"></div>
+    </div>
+
+    <div id="ct-exportar" style="display:none">
+      <div class="infobox"><i class="ti ti-info-circle"></i><span>Exporta los datos en formato CSV para análisis en Excel.</span></div>
+      <div class="card">
+        <h3><i class="ti ti-filter"></i>Filtros de exportación</h3>
+        <div class="fgrid">
+          <div class="field"><label>Cohorte</label><select id="ex-cohorte"><option value="">Todas</option></select></div>
+          <div class="field"><label>Sede</label><select id="ex-sede"><option value="">Todas</option></select></div>
+          <div class="field"><label>Becado</label><select id="ex-becado"><option value="">Todos</option></select></div>
+          <div class="field"><label>Año</label><select id="ex-year"><option value="">Todos</option></select></div>
+        </div>
+        <div id="ex-preview" style="font-size:12px;color:var(--txt3);margin-top:.5rem;padding:.6rem .9rem;background:var(--surf2);border-radius:var(--r)">—</div>
+      </div>
+      <div class="export-grid">
+        <div class="export-card"><h4><i class="ti ti-table-export"></i>Todos los procedimientos</h4><p>Una fila por registro con todos los campos.</p><button class="btn teal sm" onclick="exportXLSX('procs')"><i class="ti ti-download"></i>Descargar Excel</button></div>
+        <div class="export-card"><h4><i class="ti ti-user-check"></i>Resumen por becado</h4><p>Totales por tipo para cada becado.</p><button class="btn teal sm" onclick="exportXLSX('resumen')"><i class="ti ti-download"></i>Descargar Excel</button></div>
+        <div class="export-card"><h4><i class="ti ti-calendar-stats"></i>Resumen por cohorte</h4><p>Estadísticas agregadas por generación.</p><button class="btn teal sm" onclick="exportXLSX('cohorte')"><i class="ti ti-download"></i>Descargar Excel</button></div>
+        <div class="export-card"><h4><i class="ti ti-building-hospital"></i>Resumen por sede</h4><p>Procedimientos por sede de formación.</p><button class="btn teal sm" onclick="exportXLSX('sede')"><i class="ti ti-download"></i>Descargar Excel</button></div>
+      </div>
+    </div>
+
+    <div id="ct-usuarios" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:start">
+        <div class="card">
+          <h3><i class="ti ti-user-plus"></i>Crear becado</h3>
+          <div class="field"><label>Nombre completo</label><input type="text" id="nu-nombre"/></div>
+          <div class="fgrid">
+            <div class="field"><label>Cohorte</label><select id="nu-cohorte"></select></div>
+            <div class="field"><label>Sede de formación</label>
+              <select id="nu-sede">
+                <option>Hospital Clínico San Borja Arriarán</option>
+                <option>Hospital Clínico Universidad de Chile</option>
+                <option>Hospital Del Salvador</option>
+                <option>Hospital San Juan de Dios</option>
+                <option>Hospital Barros Luco</option>
+              </select>
+            </div>
+          </div>
+          <div class="fgrid">
+            <div class="field"><label>Usuario</label><input type="text" id="nu-user"/></div>
+            <div class="field"><label>Contraseña</label><input type="text" id="nu-pass"/></div>
+          </div>
+          <button class="btn teal" onclick="crearBecado()"><i class="ti ti-plus"></i>Crear becado</button>
+        </div>
+        <div class="card">
+          <h3><i class="ti ti-shield-plus"></i>Crear coordinador</h3>
+          <div class="field"><label>Nombre completo</label><input type="text" id="nc-nombre"/></div>
+          <div class="fgrid">
+            <div class="field"><label>Usuario</label><input type="text" id="nc-user"/></div>
+            <div class="field"><label>Contraseña</label><input type="text" id="nc-pass"/></div>
+          </div>
+          <button class="btn amber" onclick="crearCoord()"><i class="ti ti-plus"></i>Crear coordinador</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3><i class="ti ti-users"></i>Usuarios del sistema</h3>
+        <div class="fbar" style="margin-bottom:.75rem">
+          <select id="uf-rol" onchange="renderUserList()"><option value="">Todos</option><option value="becado">Becados</option><option value="coord">Coordinadores</option></select>
+          <select id="uf-cohorte" onchange="renderUserList()"><option value="">Todas las cohortes</option></select>
+          <input type="text" id="uf-search" placeholder="Buscar..." oninput="renderUserList()" style="flex:1;min-width:120px">
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;color:var(--txt2)">
+            <input type="checkbox" id="uf-show-pass" onchange="renderUserList()"> Ver claves
+          </label>
+        </div>
+        <div id="user-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection, addDoc, query, where, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/+esm';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyClTJHoT35RNj5Yg5uvVCSoGS11QvFALxs",
+  authDomain: "medproc-uchile.firebaseapp.com",
+  projectId: "medproc-uchile",
+  storageBucket: "medproc-uchile.firebasestorage.app",
+  messagingSenderId: "985739278144",
+  appId: "1:985739278144:web:424210628bfbbefcf26ca5"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ─── Constantes ───────────────────────────────────────────────────────────────
+const PROCS=['Toracocentesis','Paracentesis','Punción lumbar','Catéter venoso central','Intubación orotraqueal','Línea arterial','Otro'];
+const FILLS=['#003087','#0a7c5c','#b85c00','#5b3ea6','#c0392b','#1a7a9e','#7a5230'];
+const COHORTS=(()=>{const a=[];for(let y=2022;y<=2040;y++)a.push(String(y));return a;})();
+const SEDES=['Hospital Clínico San Borja Arriarán','Hospital Clínico Universidad de Chile','Hospital Del Salvador','Hospital San Juan de Dios','Hospital Barros Luco'];
+
+let CU=null, USERS={}, anualChart=null, groupedChart=null;
+
+// ─── Usuarios iniciales ───────────────────────────────────────────────────────
+const USUARIOS_INICIALES={
+  nquinteros:{pass:'coord2025',name:'Nicolas Quinteros Muñoz',role:'coord',cohorte:null,sede:null},
+  njara:{pass:'coord2025',name:'Natalia Jara Contreras',role:'coord',cohorte:null,sede:null},
+  ahernandez:{pass:'coord2025',name:'Ariane Hernández Kemmerlich',role:'coord',cohorte:null,sede:null},
+  eforray:{pass:'coord2025',name:'Esteban Forray',role:'coord',cohorte:null,sede:null},
+  apinto:{pass:'coord2025',name:'Andres Pinto',role:'coord',cohorte:null,sede:null},
+  fcarreno:{pass:'coord2025',name:'Felipe Carreño',role:'coord',cohorte:null,sede:null},
+  csotomayor:{pass:'coord2025',name:'Celine Sotomayor',role:'coord',cohorte:null,sede:null},
+  pacuna:{pass:'coord2025',name:'Pilar Acuña',role:'coord',cohorte:null,sede:null},
+  jcabrera:{pass:'medproc2024',name:'Jose Eduardo Cabrera Jara',role:'becado',cohorte:'2024',sede:'Hospital San Juan de Dios'},
+  jmiranda:{pass:'medproc2024',name:'Joaquin Orlando Miranda Soto',role:'becado',cohorte:'2024',sede:'Hospital Clínico Universidad de Chile'},
+  mgalleguillos:{pass:'medproc2024',name:'Michell Andres Galleguillos Valdivia',role:'becado',cohorte:'2024',sede:'Hospital Clínico Universidad de Chile'},
+  mjorquera:{pass:'medproc2024',name:'Maria Constanza Jorquera Cancino',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  aconcha:{pass:'medproc2024',name:'Alejandro Javier Concha Rivero',role:'becado',cohorte:'2024',sede:'Hospital Clínico San Borja Arriarán'},
+  cmunoz:{pass:'medproc2024',name:'Constanza Francisca Muñoz Castro',role:'becado',cohorte:'2024',sede:'Hospital Clínico Universidad de Chile'},
+  mgodoy:{pass:'medproc2024',name:'Maria Teresa Godoy Labarca',role:'becado',cohorte:'2024',sede:'Hospital San Juan de Dios'},
+  jferes:{pass:'medproc2024',name:'Josefa Isidora Feres Garcia',role:'becado',cohorte:'2024',sede:'Hospital Clínico Universidad de Chile'},
+  aalfaro:{pass:'medproc2024',name:'Andrea De Los Angeles Alfaro Uren',role:'becado',cohorte:'2024',sede:'Hospital Clínico San Borja Arriarán'},
+  jgonzalez:{pass:'medproc2024',name:'Jose Ignacio Gonzalez Smith',role:'becado',cohorte:'2024',sede:'Hospital Clínico San Borja Arriarán'},
+  amessen:{pass:'medproc2024',name:'Andrea Ignacia Messen Koch',role:'becado',cohorte:'2024',sede:'Hospital San Juan de Dios'},
+  claferte:{pass:'medproc2024',name:'Carola Vanessa Laferte Vasquez',role:'becado',cohorte:'2024',sede:'Hospital San Juan de Dios'},
+  mcayupe:{pass:'medproc2024',name:'Manuel Hernan Cayupe Martinez',role:'becado',cohorte:'2024',sede:'Hospital Clínico Universidad de Chile'},
+  sgomez:{pass:'medproc2024',name:'Sabrina Ensa Gomez Arevalo',role:'becado',cohorte:'2024',sede:'Hospital Clínico Universidad de Chile'},
+  cdiaz:{pass:'medproc2024',name:'Constanza Andrea Del Carmen Diaz Choque',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  cmedina:{pass:'medproc2024',name:'Camila Pilar Medina Gonzalez',role:'becado',cohorte:'2024',sede:'Hospital Clínico San Borja Arriarán'},
+  tabedrapo:{pass:'medproc2024',name:'Tomas Agustin Abedrapo Ruiz',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  fgajardo:{pass:'medproc2024',name:'Fernanda Matilde Gajardo Cortes',role:'becado',cohorte:'2024',sede:'Hospital Clínico San Borja Arriarán'},
+  mcaballero:{pass:'medproc2024',name:'Maglio Felipe Caballero Pohl',role:'becado',cohorte:'2024',sede:'Hospital Clínico Universidad de Chile'},
+  dquilodran:{pass:'medproc2024',name:'Daniel Felipe Quilodran Ramirez',role:'becado',cohorte:'2024',sede:'Hospital Clínico San Borja Arriarán'},
+  jhernandez:{pass:'medproc2024',name:'Javiera Andrea Hernandez Coliñir',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  apinto2:{pass:'medproc2024',name:'Ana Karina Pinto Fajuri',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  rmartinez:{pass:'medproc2024',name:'Rodrigo Tomas Martinez Hernandez',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  gvaldes:{pass:'medproc2024',name:'Gonzalo Ariel Valdes Alonzo',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  flarregla:{pass:'medproc2024',name:'Felipe Andres Larregla Henriquez',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  ncuadra:{pass:'medproc2024',name:'Nicolas Jaime Cuadra Ramirez',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  bhenriquez:{pass:'medproc2024',name:'Bastian Alonso Henriquez Gamboa',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  stumani:{pass:'medproc2024',name:'Sandra Stefania Tumani Crestuzzo',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  nlara:{pass:'medproc2024',name:'Natalia Elizabeth Lara Vera',role:'becado',cohorte:'2024',sede:'Hospital Clínico Universidad de Chile'},
+  lmolina:{pass:'medproc2024',name:'Luis Exequiel Molina Gallardo',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  elopez:{pass:'medproc2024',name:'Esteban Alfonso Lopez Gonzalez',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  jvillagran:{pass:'medproc2024',name:'Juan Francisco Villagran Gallegos',role:'becado',cohorte:'2024',sede:'Hospital San Juan de Dios'},
+  mcasanova:{pass:'medproc2024',name:'Maria Celeste Victoria Casanova Ortega',role:'becado',cohorte:'2024',sede:'Hospital Clínico San Borja Arriarán'},
+  paguirre:{pass:'medproc2024',name:'Pedro Pablo Aguirre Gonzalez',role:'becado',cohorte:'2024',sede:'Hospital Clínico Universidad de Chile'},
+  dserrano:{pass:'medproc2024',name:'Dayanara Belen Serrano Lemus',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  ctorres:{pass:'medproc2024',name:'Camila Andrea Torres Garcia',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  msmith:{pass:'medproc2024',name:'Mariano Andres Smith Gahona',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  nretamal:{pass:'medproc2024',name:'Nathanael Eli Retamal Ramos',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  criveros:{pass:'medproc2024',name:'Cristobal Javier Riveros Salinas',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  bvalenzuela:{pass:'medproc2024',name:'Bernardita Isabel Valenzuela Oelckers',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  malveal:{pass:'medproc2024',name:'Marco Antonio Alveal Bahamondez',role:'becado',cohorte:'2024',sede:'Hospital San Juan de Dios'},
+  flobos:{pass:'medproc2024',name:'Felipe Eduardo Lobos Cáceres',role:'becado',cohorte:'2024',sede:'Hospital Clínico San Borja Arriarán'},
+  mpereira:{pass:'medproc2024',name:'Mariana Trinidad Pereira Aguirre',role:'becado',cohorte:'2024',sede:'Hospital San Juan de Dios'},
+  jfuentes:{pass:'medproc2024',name:'Javier Ignacio Fuentes Yevenes',role:'becado',cohorte:'2024',sede:'Hospital San Juan de Dios'},
+  ehuanca:{pass:'medproc2024',name:'Ernesto Huanca Huanca',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  saguilar:{pass:'medproc2024',name:'Silvia Carolina Del Carmen Aguilar Salas',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  yosta:{pass:'medproc2024',name:'Yazan Yousef Abdelhamid Osta',role:'becado',cohorte:'2024',sede:'Hospital San Juan de Dios'},
+  yrivas:{pass:'medproc2024',name:'Yeslin Del Valle Rivas Angel',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  jmadriz:{pass:'medproc2024',name:'Jesus Alberto Madriz Theis',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  dsaleem:{pass:'medproc2024',name:'Danish Saleem',role:'becado',cohorte:'2024',sede:'Hospital Del Salvador'},
+  mcarrasco:{pass:'medproc2024',name:'Mariuska Andreina Carrasco Castejon',role:'becado',cohorte:'2024',sede:'Hospital Barros Luco'},
+  atoledo:{pass:'medproc2024',name:'Alvaro Alberto Toledo Medrano',role:'becado',cohorte:'2024',sede:'Hospital San Juan de Dios'},
+  jdelcorral:{pass:'medproc2024',name:'Jorge Andres Del Corral Scott',role:'becado',cohorte:'2024',sede:'Hospital Clínico Universidad de Chile'},
+  vkonig:{pass:'medproc2025',name:'Virginia Konig',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  lvargas:{pass:'medproc2025',name:'Luis Alberto Vargas Muñoz',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  vrivillo:{pass:'medproc2025',name:'Valentina Natalia Rivillo Arcaya',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  jmolina:{pass:'medproc2025',name:'Juan Ignacio Molina Toro',role:'becado',cohorte:'2025',sede:'Hospital Clínico Universidad de Chile'},
+  rtorres:{pass:'medproc2025',name:'Rene Alejandro Torres Venegas',role:'becado',cohorte:'2025',sede:'Hospital Clínico Universidad de Chile'},
+  mmiranda:{pass:'medproc2025',name:'Matias Gabriel Miranda Miranda',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  jquiroz:{pass:'medproc2025',name:'Juan Ignacio Amadeus Quiroz Escobar',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  ffigueroa:{pass:'medproc2025',name:'Francisco Antonio Figueroa Mitelman',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  aguerrero:{pass:'medproc2025',name:'Alvaro Adrian Guerrero Alvarado',role:'becado',cohorte:'2025',sede:'Hospital Clínico San Borja Arriarán'},
+  cretamal:{pass:'medproc2025',name:'Carla Francisca Retamal Maureira',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  msolano:{pass:'medproc2025',name:'Mauricio Hernan Solano Lagos',role:'becado',cohorte:'2025',sede:'Hospital Clínico Universidad de Chile'},
+  jdaszenies:{pass:'medproc2025',name:'Joaquin Eduardo Daszenies Covacevich',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  mmarquez:{pass:'medproc2025',name:'Manuel Alejandro Marquez Marquez',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  jjohn:{pass:'medproc2025',name:'Juan Eduardo John Gajardo',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  mrodriguez:{pass:'medproc2025',name:'Maria Soledad Rodriguez Aedo',role:'becado',cohorte:'2025',sede:'Hospital Clínico San Borja Arriarán'},
+  yding:{pass:'medproc2025',name:'Yaocin Cindy Ding Zhou',role:'becado',cohorte:'2025',sede:'Hospital Clínico San Borja Arriarán'},
+  gbriceno:{pass:'medproc2025',name:'Gabriel Briceño Rubio',role:'becado',cohorte:'2025',sede:'Hospital Clínico San Borja Arriarán'},
+  fsaez:{pass:'medproc2025',name:'Francisco Tomas Saez Correa',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  ccancino:{pass:'medproc2025',name:'Constanza Valentina Cancino Caamaño',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  fcastillo:{pass:'medproc2025',name:'Francisca Antonia Castillo Pereira',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  vavendano:{pass:'medproc2025',name:'Valentina Javiera Avendaño Guajardo',role:'becado',cohorte:'2025',sede:'Hospital Clínico Universidad de Chile'},
+  secheverria:{pass:'medproc2025',name:'Sarita Javiera Echeverria Valdivia',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  jsanjuan:{pass:'medproc2025',name:'Jorge Ignacio San Juan Andrade',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  abarrientos:{pass:'medproc2025',name:'Ana Paula Barrientos Iribarren',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  vmillape:{pass:'medproc2025',name:'Valeria Nicole Millape Romero',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  xbadilla:{pass:'medproc2025',name:'Ximena Martina Badilla Pefaur',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  vyanez:{pass:'medproc2025',name:'Vicente Javier Yañez Abuter',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  mcastillo:{pass:'medproc2025',name:'Macarena Angie Castillo Riveros',role:'becado',cohorte:'2025',sede:'Hospital Clínico San Borja Arriarán'},
+  rborchert:{pass:'medproc2025',name:'Regina Borchert Billik',role:'becado',cohorte:'2025',sede:'Hospital Clínico Universidad de Chile'},
+  sviscay:{pass:'medproc2025',name:'Sofia Emilia Viscay Sanchez',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  cmendoza:{pass:'medproc2025',name:'Carolina Andrea Mendoza Perez',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  acruz:{pass:'medproc2025',name:'Amalia Cruz Brunet',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  ilopez:{pass:'medproc2025',name:'Isidora Antonia Lopez Duarte',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  jvenegas:{pass:'medproc2025',name:'Janielee Scarlet Venegas Alarcon',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  arodriguez:{pass:'medproc2025',name:'Angel Javier Rodriguez Sanhueza',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  mgomez:{pass:'medproc2025',name:'Marisol Fernanda Gomez Sanchez',role:'becado',cohorte:'2025',sede:'Hospital Clínico San Borja Arriarán'},
+  evilla:{pass:'medproc2025',name:'Eduardo Andres Villa Ugarte',role:'becado',cohorte:'2025',sede:'Hospital Clínico Universidad de Chile'},
+  gortiz:{pass:'medproc2025',name:'Gabriela Alejandra Rita Ortiz Orellana',role:'becado',cohorte:'2025',sede:'Hospital Clínico San Borja Arriarán'},
+  bruz:{pass:'medproc2025',name:'Benjamin Ignacio Ruz Rodriguez',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  pgil:{pass:'medproc2025',name:'Pamela Yanet Gil Galleguillos',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  joyarzun:{pass:'medproc2025',name:'Javiera Cecilia Oyarzun Rojas',role:'becado',cohorte:'2025',sede:'Hospital Clínico Universidad de Chile'},
+  saguirre:{pass:'medproc2025',name:'Sebastian Alejandro Aguirre Romero',role:'becado',cohorte:'2025',sede:'Hospital Clínico Universidad de Chile'},
+  cvalenzuela:{pass:'medproc2025',name:'Carlos Natanael Valenzuela Magun',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  hwiderstrom:{pass:'medproc2025',name:'Heinz Otto Widerstrom Isea',role:'becado',cohorte:'2025',sede:'Hospital Clínico San Borja Arriarán'},
+  jgonzalez2:{pass:'medproc2025',name:'Jorge Luis Gonzalez Vasquez',role:'becado',cohorte:'2025',sede:'Hospital Clínico Universidad de Chile'},
+  mmalzahn:{pass:'medproc2025',name:'Maximiliano David Malzahn Bello',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  cmonsalvez:{pass:'medproc2025',name:'Catalina Alejandra Monsalvez Valenzuela',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  twood:{pass:'medproc2025',name:'Thomas Andrew Wood Marshall',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  vrayo:{pass:'medproc2025',name:'Vicente Andres Rayo Bastias',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  cguerra:{pass:'medproc2025',name:'Carolina Ignacia Guerra Gajardo',role:'becado',cohorte:'2025',sede:'Hospital San Juan de Dios'},
+  jborquez:{pass:'medproc2025',name:'Joaquin Enrique Borquez Melo',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  bcorrea:{pass:'medproc2025',name:'Belen Del Carmen Correa Garrido',role:'becado',cohorte:'2025',sede:'Hospital Del Salvador'},
+  tmunoz:{pass:'medproc2025',name:'Thiare Fernanda Muñoz Henriquez',role:'becado',cohorte:'2025',sede:'Hospital Clínico San Borja Arriarán'},
+  ycolina:{pass:'medproc2025',name:'Yelitze Carolina Colina Montaño',role:'becado',cohorte:'2025',sede:'Hospital Barros Luco'},
+  pvazquez:{pass:'medproc2025',name:'Pablo Xavier Vazquez Donoso',role:'becado',cohorte:'2025',sede:'Hospital Clínico San Borja Arriarán'},
+  fgarcia:{pass:'medproc2026',name:'Felipe Andres Garcia Figueroa',role:'becado',cohorte:'2026',sede:'Hospital Clínico Universidad de Chile'},
+  elemunao:{pass:'medproc2026',name:'Edgar Nicolas Lemunao Ortiz',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+  naburto:{pass:'medproc2026',name:'Nicolas Ignacio Aburto Moccia',role:'becado',cohorte:'2026',sede:'Hospital Clínico Universidad de Chile'},
+  motarola:{pass:'medproc2026',name:'Mackarena Alejandra Otarola Mendoza',role:'becado',cohorte:'2026',sede:'Hospital San Juan de Dios'},
+  chernandez:{pass:'medproc2026',name:'Camilo Arturo Hernandez Hernandez',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  pcorrea:{pass:'medproc2026',name:'Patricio Javier Correa Marfull',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  rtolhuysen:{pass:'medproc2026',name:'Rafael Antonio Tolhuysen Martinez',role:'becado',cohorte:'2026',sede:'Hospital San Juan de Dios'},
+  bcarvajal:{pass:'medproc2026',name:'Belen Indira Carvajal Maldonado',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  jastorga:{pass:'medproc2026',name:'Javier Alejandro Astorga Vasquez',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  nneira:{pass:'medproc2026',name:'Nicole Andrea Neira Piotrowski',role:'becado',cohorte:'2026',sede:'Hospital San Juan de Dios'},
+  relgueta:{pass:'medproc2026',name:'Ricardo Antonio Elgueta Rojas',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  bmoreno:{pass:'medproc2026',name:'Bayron Andres Moreno Ortiz',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  gbravo:{pass:'medproc2026',name:'Gonzalo Bravo Maturana',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+  gmarambio:{pass:'medproc2026',name:'Gonzalo Alexander Marambio Galaz',role:'becado',cohorte:'2026',sede:'Hospital Clínico Universidad de Chile'},
+  fdote:{pass:'medproc2026',name:'Francisco Ignacio Dote Curiman',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  cretamal2:{pass:'medproc2026',name:'Camila Andrea Retamal Gutierrez',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  aquiroz:{pass:'medproc2026',name:'Angela Yazmin Quiroz Oyarce',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+  fespinoza:{pass:'medproc2026',name:'Francisca Paz Espinoza Ayarza',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+  lpacheco:{pass:'medproc2026',name:'Loreto Josefina Pacheco Carrasco',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  agomez:{pass:'medproc2026',name:'Alvaro Ignacio Gomez Arce',role:'becado',cohorte:'2026',sede:'Hospital San Juan de Dios'},
+  bcortez:{pass:'medproc2026',name:'Berardo Alejandro Cortez Contreras',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+  jcamus:{pass:'medproc2026',name:'Javiera Andrea Camus Valenzuela',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+  colea:{pass:'medproc2026',name:'Carolina Andrea Olea Gangas',role:'becado',cohorte:'2026',sede:'Hospital Clínico Universidad de Chile'},
+  mapablaza:{pass:'medproc2026',name:'Matias Francisco Apablaza Eulufi',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+  gclaps:{pass:'medproc2026',name:'Gonzalo Ignacio Claps Frindt',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  plopez:{pass:'medproc2026',name:'Paola Lopez Herrera',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  eacuna:{pass:'medproc2026',name:'Estefania Paz Acuña Brevis',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  tsandoval:{pass:'medproc2026',name:'Trinidad Elisa Sandoval Gonzalez',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  awallach:{pass:'medproc2026',name:'Arieh Wallach Weinstein',role:'becado',cohorte:'2026',sede:'Hospital San Juan de Dios'},
+  fbarra:{pass:'medproc2026',name:'Francisca Macarena Paz Barra Rodriguez',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  vcarrasco:{pass:'medproc2026',name:'Vanessa Belen Carrasco Valenzuela',role:'becado',cohorte:'2026',sede:'Hospital Clínico Universidad de Chile'},
+  vlopez:{pass:'medproc2026',name:'Veronica Daniela Lopez Ramirez',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+  bacuna:{pass:'medproc2026',name:'Bruno Acuña Acuña',role:'becado',cohorte:'2026',sede:'Hospital Clínico Universidad de Chile'},
+  jsaitua:{pass:'medproc2026',name:'Javiera Andrea Saitua Zunzunegui',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  aarriagada:{pass:'medproc2026',name:'Alvaro Andres Arriagada Carvajal',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  nalfaro:{pass:'medproc2026',name:'Natalia Betsabe Alfaro Vega',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  iaguilar:{pass:'medproc2026',name:'Isidora Aguilar Tapia',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  gmendez:{pass:'medproc2026',name:'Gabriel Alfonso Mendez Valdes',role:'becado',cohorte:'2026',sede:'Hospital Clínico Universidad de Chile'},
+  jbotzotz:{pass:'medproc2026',name:'Juan Francisco Botzotz Carraha',role:'becado',cohorte:'2026',sede:'Hospital Clínico Universidad de Chile'},
+  brousseau:{pass:'medproc2026',name:'Benjamin Rousseau Martinez',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  ncruz:{pass:'medproc2026',name:'Nicolas Antonio Cruz Gonzalez',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  cmunoz2:{pass:'medproc2026',name:'Cristian Antonio Muñoz Segura',role:'becado',cohorte:'2026',sede:'Hospital Clínico Universidad de Chile'},
+  jlyon:{pass:'medproc2026',name:'Javiera Lyon Bossay',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  slubascher:{pass:'medproc2026',name:'Sofia Isabel Lubascher Schnettler',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  jbello:{pass:'medproc2026',name:'Juan Antonio Lisandro Bello Zepeda',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+  amunoz:{pass:'medproc2026',name:'Amparo Ailen Muñoz Jubal',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  vcalcutta:{pass:'medproc2026',name:'Valentina Isabel Calcutta Casassas',role:'becado',cohorte:'2026',sede:'Hospital San Juan de Dios'},
+  cschaub:{pass:'medproc2026',name:'Constanza Paz Schaub Cantin',role:'becado',cohorte:'2026',sede:'Hospital Barros Luco'},
+  jmunoz:{pass:'medproc2026',name:'Jorge Benjamin Muñoz Alvarado',role:'becado',cohorte:'2026',sede:'Hospital Del Salvador'},
+  jvalenzuela:{pass:'medproc2026',name:'Javier Ignacio Valenzuela Veloso',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+  stessada:{pass:'medproc2026',name:'Santiago Alejandro Tessada Yevenes',role:'becado',cohorte:'2026',sede:'Hospital San Juan de Dios'},
+  jsilva:{pass:'medproc2026',name:'Joaquin Andres Silva Serrano',role:'becado',cohorte:'2026',sede:'Hospital San Juan de Dios'},
+  arivera:{pass:'medproc2026',name:'Alonso David Rivera Rivera',role:'becado',cohorte:'2026',sede:'Hospital San Juan de Dios'},
+  avelasquez:{pass:'medproc2026',name:'Andres David Velasquez Guerra',role:'becado',cohorte:'2026',sede:'Hospital Clínico Universidad de Chile'},
+  lsuarez:{pass:'medproc2026',name:'Luis Rafael Suarez Rodriguez',role:'becado',cohorte:'2026',sede:'Hospital Clínico San Borja Arriarán'},
+};
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function initials(n){return n.split(' ').filter((_,i)=>i<2).map(w=>w[0].toUpperCase()).join('');}
+function fmtDate(f){if(!f)return'';const[y,m,d]=f.split('-');return`${d}/${m}/${y}`;}
+function becados(){return Object.values(USERS).filter(u=>u.role==='becado');}
+function cohortes(){return[...new Set(becados().map(u=>u.cohorte).filter(Boolean))].sort();}
+function procDot(t){const i=PROCS.indexOf(t);return FILLS[i>=0?i:FILLS.length-1];}
+function toast(msg){const t=document.getElementById('toast');t.textContent='✓ '+msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function showLoading(msg='Cargando...'){
+  const o=document.getElementById('loading-overlay');
+  o.querySelector('span').textContent=msg;o.style.display='flex';
+}
+function hideLoading(){document.getElementById('loading-overlay').style.display='none';}
+
+function barChart(el,data){
+  if(!el)return;
+  const entries=Object.entries(data).filter(([,v])=>v>0);
+  if(!entries.length){el.innerHTML='<p style="font-size:12px;color:var(--txt3);padding:.5rem 0">Sin procedimientos aún</p>';return;}
+  const max=Math.max(...entries.map(([,v])=>v),1);
+  el.innerHTML=entries.sort((a,b)=>b[1]-a[1]).map(([k,v],i)=>`
+    <div class="brow"><div class="blabel" title="${k}">${k}</div>
+    <div class="btrack"><div class="bfill" style="background:${FILLS[i%FILLS.length]};width:${Math.round(v/max*100)}%">${v}</div></div></div>`).join('');
+}
+
+// ─── Firebase: cargar usuarios ────────────────────────────────────────────────
+async function loadUsers(){
+  const snap = await getDocs(collection(db,'users'));
+  USERS={};
+  snap.forEach(d=>{ USERS[d.id]={username:d.id,...d.data()}; });
+  // Si no hay usuarios, sembrar los iniciales
+  if(Object.keys(USERS).length===0){
+    showLoading('Primera vez: creando usuarios...');
+    for(const [uid,data] of Object.entries(USUARIOS_INICIALES)){
+      await setDoc(doc(db,'users',uid),{...data,initials:initials(data.name)});
+      USERS[uid]={username:uid,...data,initials:initials(data.name)};
+    }
+  }
+}
+
+// ─── Login ────────────────────────────────────────────────────────────────────
+async function doLogin(){
+  const u=document.getElementById('lu').value.trim().toLowerCase();
+  const p=document.getElementById('lp').value;
+  const err=document.getElementById('lerr');
+  const btn=document.getElementById('login-btn');
+  if(!u||!p){showErr('Completa usuario y contraseña');return;}
+  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader-2"></i>Verificando...';
+  try{
+    const usr=USERS[u];
+    if(usr&&usr.pass===p){
+      err.style.display='none';
+      CU={...usr,username:u};
+      CU.role==='coord'?showCoord():showBecado();
+    }else{
+      showErr('Usuario o contraseña incorrectos');
+    }
+  }finally{
+    btn.disabled=false;btn.innerHTML='<i class="ti ti-login"></i>Ingresar';
+  }
+}
+function showErr(msg){
+  const err=document.getElementById('lerr');
+  document.getElementById('lerr-msg').textContent=msg;
+  err.style.display='flex';
+}
+function logout(){
+  CU=null;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scr-login').classList.add('active');
+  ['lu','lp'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('lerr').style.display='none';
+}
+
+// ─── Procedimientos: leer desde Firestore ─────────────────────────────────────
+async function getProcsUser(username){
+  const snap=await getDocs(query(collection(db,'procs'),where('username','==',username),orderBy('fecha','desc')));
+  return snap.docs.map(d=>({id:d.id,...d.data()}));
+}
+async function getAllProcs(filters={}){
+  let q=query(collection(db,'procs'));
+  const snap=await getDocs(q);
+  let procs=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(filters.cohorte) procs=procs.filter(p=>USERS[p.username]?.cohorte===filters.cohorte);
+  if(filters.sede)    procs=procs.filter(p=>USERS[p.username]?.sede===filters.sede);
+  if(filters.becado)  procs=procs.filter(p=>p.username===filters.becado);
+  if(filters.year)    procs=procs.filter(p=>p.fecha?.startsWith(filters.year));
+  return procs.map(p=>({...p,becadoName:USERS[p.username]?.name||p.username,becadoSede:USERS[p.username]?.sede||'',cohorte:USERS[p.username]?.cohorte||''}));
+}
+
+// ─── Pantalla becado ───────────────────────────────────────────────────────────
+async function showBecado(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scr-becado').classList.add('active');
+  document.getElementById('bav-top').textContent=CU.initials||initials(CU.name);
+  document.getElementById('bname-top').textContent=CU.name.split(' ').map((w,i)=>i===0?w[0]+'.':w).join(' ');
+  document.getElementById('f-fecha').value=new Date().toISOString().slice(0,10);
+  await renderBStats();
+  btab('reg',document.querySelector('#scr-becado .tab'));
+}
+
+async function renderBStats(){
+  const procs=await getProcsUser(CU.username);
+  const tipos=[...new Set(procs.map(p=>p.tipo))];
+  const el=document.getElementById('b-stats');if(!el)return;
+  el.innerHTML=`
+    <div class="scard"><div class="slabel">Total</div><div class="sval">${procs.length}</div><div class="ssub">procedimientos</div></div>
+    <div class="scard"><div class="slabel">Tipos distintos</div><div class="sval">${tipos.length}</div><div class="ssub">de ${PROCS.length-1} posibles</div></div>
+    <div class="scard"><div class="slabel">Cohorte</div><div class="sval" style="font-size:16px">${CU.cohorte||'—'}</div><div class="ssub">egreso ${CU.cohorte?parseInt(CU.cohorte)+3:'—'}</div></div>
+    <div class="scard"><div class="slabel">Sede</div><div class="sval" style="font-size:11px;margin-top:4px;line-height:1.3">${(CU.sede||'—').replace('Hospital ','H. ')}</div></div>`;
+  populateYearFilterFromProcs('hf-year',procs);
+}
+
+function btab(tab,el){
+  document.querySelectorAll('#scr-becado .tab').forEach(t=>t.classList.remove('on'));
+  if(el)el.classList.add('on');
+  document.getElementById('bt-reg').style.display=tab==='reg'?'block':'none';
+  document.getElementById('bt-hist').style.display=tab==='hist'?'block':'none';
+  if(tab==='hist')renderHist();
+}
+
+async function registrar(){
+  const tipo=document.getElementById('f-tipo').value;
+  const lugar=document.getElementById('f-lugar').value;
+  const fecha=document.getElementById('f-fecha').value;
+  const supervisor=document.getElementById('f-supervisor').value.trim();
+  const paciente=document.getElementById('f-paciente').value.trim().toUpperCase();
+  const notas=document.getElementById('f-notas').value.trim();
+  if(!tipo||!lugar||!fecha){toast('Completa procedimiento, lugar y fecha');return;}
+  showLoading('Guardando...');
+  try{
+    await addDoc(collection(db,'procs'),{username:CU.username,tipo,lugar,fecha,supervisor,paciente,notas,createdAt:new Date().toISOString()});
+    limpiarForm();await renderBStats();
+    toast('Procedimiento guardado en la nube ☁️');
+  }catch(e){toast('Error al guardar: '+e.message);}
+  finally{hideLoading();}
+}
+
+function limpiarForm(){
+  ['f-tipo','f-lugar'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-fecha').value=new Date().toISOString().slice(0,10);
+  ['f-supervisor','f-paciente','f-notas'].forEach(id=>document.getElementById(id).value='');
+}
+
+async function renderHist(){
+  const procs=await getProcsUser(CU.username);
+  const ft=document.getElementById('hf-tipo').value;
+  const fy=document.getElementById('hf-year').value;
+  const filtered=procs.filter(p=>(!ft||p.tipo===ft)&&(!fy||p.fecha?.startsWith(fy)));
+  document.getElementById('hist-c').textContent=filtered.length+' registros';
+  const el=document.getElementById('hist-list');
+  if(!filtered.length){el.innerHTML='<div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún</p></div>';return;}
+  el.innerHTML=filtered.map(p=>`
+    <div class="pitem"><div class="pdot" style="background:${procDot(p.tipo)}"></div>
+    <div class="pinfo">
+      <div class="pname">${p.tipo}${p.paciente?` <span style="font-family:var(--mono);font-size:11px;color:var(--txt3);background:var(--surf3);padding:1px 6px;border-radius:4px">${p.paciente}</span>`:''}</div>
+      <div class="pmeta"><b>${p.lugar}</b> · ${fmtDate(p.fecha)}${p.supervisor?` · <span class="badge b-blue">Sup: ${p.supervisor}</span>`:''}</div>
+      ${p.notas?`<div class="pnotes">${p.notas}</div>`:''}
+    </div></div>`).join('');
+}
+
+// ─── Pantalla coordinador ──────────────────────────────────────────────────────
+async function showCoord(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scr-coord').classList.add('active');
+  document.getElementById('cav-top').textContent=CU.initials||initials(CU.name);
+  document.getElementById('cname-top').textContent=CU.name.split(' ').slice(0,2).join(' ');
+  populateCoordFilters();
+  await renderGeneral();
+}
+
+function ctab(tab,el){
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('on'));
+  if(el)el.classList.add('on');
+  ['general','becados','sedes','procedimientos','detalle','exportar','usuarios'].forEach(t=>{
+    const x=document.getElementById('ct-'+t);if(x)x.style.display=t===tab?'block':'none';
+  });
+  const fn={
+    general:renderGeneral,
+    becados:()=>{renderBecado();},
+    sedes:renderSedes,
+    procedimientos:renderProcs,
+    detalle:renderDetalle,
+    exportar:renderExport,
+    usuarios:()=>{renderUserList();populateGestionCohortes();}
+  };
+  if(fn[tab])fn[tab]();
+}
+
+function populateYearFilterFromProcs(id,procs){
+  const el=document.getElementById(id);if(!el)return;
+  const yrs=[...new Set(procs.map(p=>p.fecha?p.fecha.slice(0,4):null).filter(Boolean))].sort();
+  while(el.options.length>1)el.remove(1);
+  yrs.forEach(y=>el.add(new Option(y,y)));
+}
+function populateSelect(id,opts,labelFn){
+  const el=document.getElementById(id);if(!el)return;
+  while(el.options.length>1)el.remove(1);
+  opts.forEach(o=>el.add(new Option(labelFn?labelFn(o):o,o)));
+}
+function populateCoordFilters(){
+  const cohs=cohortes();
+  const cohLabel=c=>`Cohorte ${c} (egreso ${parseInt(c)+3})`;
+  ['cf-cohorte','cp-cohorte','df-cohorte'].forEach(id=>populateSelect(id,cohs,cohLabel));
+  ['cf-sede-b','cp-sede'].forEach(id=>populateSelect(id,SEDES));
+  ['cf-becado','df-becado'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    while(el.options.length>1)el.remove(1);
+    becados().sort((a,b)=>a.name.localeCompare(b.name)).forEach(u=>el.add(new Option(u.name,u.username)));
+  });
+  populateSelect('ex-cohorte',cohs,cohLabel);
+  populateSelect('ex-sede',SEDES);
+  const exBec=document.getElementById('ex-becado');
+  if(exBec){while(exBec.options.length>1)exBec.remove(1);becados().sort((a,b)=>a.name.localeCompare(b.name)).forEach(u=>exBec.add(new Option(u.name,u.username)));}
+}
+function populateGestionCohortes(){
+  populateSelect('nu-cohorte',COHORTS,c=>`${c} (egreso ${parseInt(c)+3})`);
+  const uf=document.getElementById('uf-cohorte');
+  if(uf){while(uf.options.length>1)uf.remove(1);cohortes().forEach(c=>uf.add(new Option(`Cohorte ${c}`,c)));}
+}
+
+async function renderGeneral(){
+  showLoading('Cargando datos...');
+  try{
+    const procs=await getAllProcs();
+    const bs=becados();const cohs=cohortes();
+    const el=document.getElementById('cg-stats');
+    if(el)el.innerHTML=`
+      <div class="scard"><div class="slabel">Total procedimientos</div><div class="sval">${procs.length}</div></div>
+      <div class="scard"><div class="slabel">Becados</div><div class="sval">${bs.length}</div></div>
+      <div class="scard"><div class="slabel">Cohortes</div><div class="sval">${cohs.length}</div></div>
+      <div class="scard"><div class="slabel">Promedio x becado</div><div class="sval">${bs.length?Math.round(procs.length/bs.length):0}</div></div>`;
+    const byTipo={};procs.forEach(p=>{byTipo[p.tipo]=(byTipo[p.tipo]||0)+1;});
+    barChart(document.getElementById('cg-tipos'),byTipo);
+    const bySede={};procs.forEach(p=>{const s=USERS[p.username]?.sede;if(s)bySede[s]=(bySede[s]||0)+1;});
+    barChart(document.getElementById('cg-sedes'),bySede);
+    renderAnualChart(procs);
+  }finally{hideLoading();}
+}
+
+function renderAnualChart(procs){
+  const byYear={};procs.forEach(p=>{const y=p.fecha?p.fecha.slice(0,4):null;if(y)byYear[y]=(byYear[y]||0)+1;});
+  const ctx=document.getElementById('ch-anual');if(!ctx)return;
+  if(anualChart)anualChart.destroy();
+  if(!Object.keys(byYear).length){
+    const c=ctx.getContext('2d');c.clearRect(0,0,ctx.width,ctx.height);
+    c.fillStyle='#7a8799';c.font='13px sans-serif';c.textAlign='center';
+    c.fillText('Sin procedimientos aún',ctx.width/2,ctx.height/2);return;
+  }
+  const labels=Object.keys(byYear).sort();
+  anualChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Procedimientos',data:labels.map(y=>byYear[y]),backgroundColor:'#003087',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
+}
+
+async function renderBecado(){
+  const cohorte=document.getElementById('cf-cohorte').value;
+  const sedeF=document.getElementById('cf-sede-b').value;
+  const selBecado=document.getElementById('cf-becado');
+  while(selBecado.options.length>1)selBecado.remove(1);
+  const filtered=becados().filter(u=>(!cohorte||u.cohorte===cohorte)&&(!sedeF||u.sede===sedeF));
+  filtered.sort((a,b)=>a.name.localeCompare(b.name)).forEach(u=>selBecado.add(new Option(u.name,u.username)));
+  showLoading('Cargando...');
+  try{
+    const procs=await getAllProcs({cohorte,sede:sedeF});
+    const cntMap={};procs.forEach(p=>{cntMap[p.username]=(cntMap[p.username]||0)+1;});
+    const el=document.getElementById('cb-lista');
+    el.innerHTML=filtered.length?'<div class="card"><h3><i class="ti ti-users"></i>Becados</h3>'+filtered.map(u=>`
+      <div class="row-flex"><div class="bav">${u.initials||initials(u.name)}</div>
+        <div style="flex:1"><div style="font-weight:500;font-size:13px">${u.name}</div>
+        <div style="font-size:11px;color:var(--txt3)">${u.sede} · <span class="tag-c">${u.cohorte}</span> · egreso ${parseInt(u.cohorte)+3}</div></div>
+        <div style="font-family:var(--mono);font-size:18px;font-weight:600;color:var(--brand)">${cntMap[u.username]||0}</div>
+      </div>`).join('')+'</div>':'<div class="empty"><i class="ti ti-user-search"></i><p>Sin becados</p></div>';
+    document.getElementById('cb-detalle').innerHTML='';
+  }finally{hideLoading();}
+}
+
+async function renderBecadoDetalle(){
+  const username=document.getElementById('cf-becado').value;
+  document.getElementById('cb-lista').innerHTML='';
+  const el=document.getElementById('cb-detalle');
+  if(!username){el.innerHTML='';return;}
+  const usr=USERS[username];
+  showLoading('Cargando detalle...');
+  try{
+    const procs=await getProcsUser(username);
+    const byTipo={};const byYear={};
+    procs.forEach(p=>{byTipo[p.tipo]=(byTipo[p.tipo]||0)+1;const y=p.fecha?.slice(0,4);if(y)byYear[y]=(byYear[y]||0)+1;});
+    el.innerHTML=`
+      <div class="sgrid">
+        <div class="scard"><div class="slabel">Total</div><div class="sval">${procs.length}</div></div>
+        <div class="scard"><div class="slabel">Tipos</div><div class="sval">${Object.keys(byTipo).length}</div></div>
+        <div class="scard"><div class="slabel">Cohorte</div><div class="sval" style="font-size:16px">${usr.cohorte}</div><div class="ssub">egreso ${parseInt(usr.cohorte)+3}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="card"><h3><i class="ti ti-chart-bar"></i>Por procedimiento</h3><div class="bchart">${
+          Object.entries(byTipo).length?Object.entries(byTipo).sort((a,b)=>b[1]-a[1]).map(([t,c],i)=>{const mx=Math.max(...Object.values(byTipo),1);return`<div class="brow"><div class="blabel">${t}</div><div class="btrack"><div class="bfill" style="background:${FILLS[i%FILLS.length]};width:${Math.round(c/mx*100)}%">${c}</div></div></div>`;}).join(''):'<p style="font-size:12px;color:var(--txt3)">Sin registros</p>'
+        }</div></div>
+        <div class="card"><h3><i class="ti ti-calendar"></i>Por año</h3><div class="bchart">${
+          Object.entries(byYear).length?Object.entries(byYear).sort((a,b)=>a[0].localeCompare(b[0])).map(([y,c],i)=>{const mx=Math.max(...Object.values(byYear),1);return`<div class="brow"><div class="blabel">${y}</div><div class="btrack"><div class="bfill" style="background:${FILLS[i%FILLS.length]};width:${Math.round(c/mx*100)}%">${c}</div></div></div>`;}).join(''):'<p style="font-size:12px;color:var(--txt3)">Sin registros</p>'
+        }</div></div>
+      </div>
+      <div class="card"><h3><i class="ti ti-list"></i>Últimos registros</h3>${
+        procs.length?`<div class="plist">${procs.slice(0,10).map(p=>`<div class="pitem"><div class="pdot" style="background:${procDot(p.tipo)}"></div>
+        <div class="pinfo"><div class="pname">${p.tipo}${p.paciente?` <span style="font-family:var(--mono);font-size:11px;color:var(--txt3);background:var(--surf3);padding:1px 5px;border-radius:4px">${p.paciente}</span>`:''}</div>
+        <div class="pmeta"><b>${p.lugar}</b> · ${fmtDate(p.fecha)}${p.supervisor?` · <span class="badge b-blue">Sup: ${p.supervisor}</span>`:''}</div>
+        ${p.notas?`<div class="pnotes">${p.notas}</div>`:''}</div></div>`).join('')}</div>`:'<div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin procedimientos aún</p></div>'
+      }</div>`;
+  }finally{hideLoading();}
+}
+
+async function renderSedes(){
+  showLoading('Cargando...');
+  try{
+    const procs=await getAllProcs();
+    const bySede={};procs.forEach(p=>{const s=USERS[p.username]?.sede;if(s)bySede[s]=(bySede[s]||0)+1;});
+    barChart(document.getElementById('cs-chart'),bySede);
+    const sedesMap={};becados().forEach(u=>{if(!sedesMap[u.sede])sedesMap[u.sede]=[];sedesMap[u.sede].push(u);});
+    const el=document.getElementById('cs-table');if(!el)return;
+    const cntMap={};procs.forEach(p=>{const s=USERS[p.username]?.sede;if(s)cntMap[s]=(cntMap[s]||0)+1;});
+    el.innerHTML='<div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Sede</th><th>N°</th><th>Cohortes</th><th>Procs</th></tr></thead><tbody>'+
+      Object.entries(sedesMap).sort((a,b)=>a[0].localeCompare(b[0])).map(([s,us])=>{
+        const cohs=[...new Set(us.map(u=>u.cohorte))].sort().join(', ');
+        return`<tr><td title="${s}">${s.replace('Hospital ','H. ')}</td><td style="font-family:var(--mono);font-weight:600">${us.length}</td><td><span class="tag-c">${cohs}</span></td><td style="font-family:var(--mono);font-weight:600">${cntMap[s]||0}</td></tr>`;
+      }).join('')+'</tbody></table></div>';
+  }finally{hideLoading();}
+}
+
+async function renderProcs(){
+  const cohorte=document.getElementById('cp-cohorte').value;
+  const sede=document.getElementById('cp-sede').value;
+  showLoading('Cargando...');
+  try{
+    const procs=await getAllProcs({cohorte,sede});
+    const byTipo={};PROCS.forEach(p=>byTipo[p]=0);procs.forEach(p=>{byTipo[p.tipo]=(byTipo[p.tipo]||0)+1;});
+    barChart(document.getElementById('cp-chart'),byTipo);
+    const ctx=document.getElementById('ch-grouped');if(!ctx)return;
+    if(groupedChart)groupedChart.destroy();
+    const topUsers=Object.entries(
+      procs.reduce((a,p)=>{a[p.username]=(a[p.username]||0)+1;return a;},{})
+    ).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([u])=>u);
+    if(!topUsers.length)return;
+    const labels=PROCS.slice(0,-1);
+    groupedChart=new Chart(ctx,{type:'bar',data:{labels,datasets:topUsers.map((u,i)=>{
+      const up=procs.filter(p=>p.username===u);
+      const nm=USERS[u]?.name||u;
+      return{label:nm.split(' ')[0]+' '+nm.split(' ')[1]?.[0]+'.',data:labels.map(t=>up.filter(p=>p.tipo===t).length),backgroundColor:FILLS[i%FILLS.length]+'cc',borderRadius:3};
+    })},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{autoSkip:false,maxRotation:30,font:{size:10}}},y:{beginAtZero:true}}}});
+  }finally{hideLoading();}
+}
+
+async function renderDetalle(){
+  const fb=document.getElementById('df-becado').value;
+  const ft=document.getElementById('df-tipo').value;
+  const fy=document.getElementById('df-year').value;
+  const fc=document.getElementById('df-cohorte').value;
+  showLoading('Cargando...');
+  try{
+    let procs=await getAllProcs({cohorte:fc,becado:fb,year:fy});
+    if(ft)procs=procs.filter(p=>p.tipo===ft);
+    procs.sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
+    const el=document.getElementById('det-list');
+    if(!procs.length){el.innerHTML='<div class="empty"><i class="ti ti-search"></i><p>Sin registros</p></div>';return;}
+    el.innerHTML=procs.map(p=>`
+      <div class="pitem"><div class="pdot" style="background:${procDot(p.tipo)}"></div>
+      <div class="pinfo">
+        <div class="pname">${p.tipo}${p.paciente?` <span style="font-family:var(--mono);font-size:11px;color:var(--txt3);background:var(--surf3);padding:1px 5px;border-radius:4px">${p.paciente}</span>`:''} <span style="font-weight:400;color:var(--txt3);font-size:12px">— ${p.becadoName} <span class="tag-c">${p.cohorte}</span></span></div>
+        <div class="pmeta"><b>${p.lugar}</b> (sede: ${p.becadoSede.replace('Hospital ','H.')}) · ${fmtDate(p.fecha)}${p.supervisor?` · <span class="badge b-blue">Sup: ${p.supervisor}</span>`:''}</div>
+        ${p.notas?`<div class="pnotes">${p.notas}</div>`:''}
+      </div></div>`).join('');
+  }finally{hideLoading();}
+}
+
+async function renderExport(){
+  populateCoordFilters();
+  showLoading('Cargando...');
+  try{
+    const procs=await getAllProcs();
+    const el=document.getElementById('ex-preview');
+    if(el)el.textContent=`${procs.length} procedimientos · ${becados().length} becados · ${cohortes().length} cohortes`;
+    populateYearFilterFromProcs('ex-year',procs);
+  }finally{hideLoading();}
+}
+
+function getExFilters(){return{cohorte:document.getElementById('ex-cohorte')?.value||'',sede:document.getElementById('ex-sede')?.value||'',becado:document.getElementById('ex-becado')?.value||'',year:document.getElementById('ex-year')?.value||''};}
+function makeWB(XLSX, sheetName, rows){
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  // Encabezado en negrita con fondo azul
+  const hdr=rows[0];
+  hdr.forEach((_,ci)=>{
+    const addr=XLSX.utils.encode_cell({r:0,c:ci});
+    if(!ws[addr])return;
+    ws[addr].s={font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'003087'}},alignment:{horizontal:'center'}};
+  });
+  // Ancho de columnas automático
+  ws['!cols']=rows[0].map((_,ci)=>({wch:Math.max(...rows.map(r=>String(r[ci]||'').length),10)+2}));
+  XLSX.utils.book_append_sheet(wb,ws,sheetName);
+  return wb;
+}
+
+async function exportXLSX(tipo){
+  const f=getExFilters();
+  showLoading('Preparando exportación...');
+  try{
+    const XLSX=await import('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/+esm');
+    const procs=await getAllProcs({cohorte:f.cohorte,sede:f.sede,becado:f.becado,year:f.year});
+    const ts=new Date().toISOString().slice(0,10).replace(/-/g,'');
+    let wb,filename;
+
+    if(tipo==='procs'){
+      const rows=[['Becado','Usuario','Cohorte','Egreso','Sede formación','Tipo','Fecha','Lugar realización','Supervisor','Iniciales paciente','Notas']];
+      procs.sort((a,b)=>a.becadoName.localeCompare(b.becadoName)).forEach(p=>
+        rows.push([p.becadoName,p.username,p.cohorte,parseInt(p.cohorte)+3,p.becadoSede,p.tipo,p.fecha,p.lugar||'',p.supervisor||'',p.paciente||'',p.notas||''])
+      );
+      wb=makeWB(XLSX,'Procedimientos',rows);filename=`medproc_procedimientos_${ts}.xlsx`;
+
+    }else if(tipo==='resumen'){
+      const rows=[['Becado','Usuario','Cohorte','Egreso','Sede','Total',...PROCS]];
+      becados().filter(u=>(!f.cohorte||u.cohorte===f.cohorte)&&(!f.sede||u.sede===f.sede)&&(!f.becado||u.username===f.becado)).forEach(u=>{
+        const ps=procs.filter(p=>p.username===u.username);
+        const byTipo={};PROCS.forEach(t=>byTipo[t]=0);ps.forEach(p=>{byTipo[p.tipo]=(byTipo[p.tipo]||0)+1;});
+        rows.push([u.name,u.username,u.cohorte,parseInt(u.cohorte)+3,u.sede,ps.length,...PROCS.map(t=>byTipo[t])]);
+      });
+      wb=makeWB(XLSX,'Resumen por becado',rows);filename=`medproc_resumen_becados_${ts}.xlsx`;
+
+    }else if(tipo==='cohorte'){
+      const rows=[['Cohorte','Egreso','N° Becados','Total',...PROCS]];
+      (f.cohorte?[f.cohorte]:cohortes()).forEach(c=>{
+        const bs=becados().filter(u=>u.cohorte===c&&(!f.sede||u.sede===f.sede));
+        const ps=procs.filter(p=>USERS[p.username]?.cohorte===c);
+        const byTipo={};PROCS.forEach(t=>byTipo[t]=0);ps.forEach(p=>{byTipo[p.tipo]=(byTipo[p.tipo]||0)+1;});
+        rows.push([c,parseInt(c)+3,bs.length,ps.length,...PROCS.map(t=>byTipo[t])]);
+      });
+      wb=makeWB(XLSX,'Resumen por cohorte',rows);filename=`medproc_resumen_cohortes_${ts}.xlsx`;
+
+    }else if(tipo==='sede'){
+      const rows=[['Sede','N° Becados','Cohortes','Total',...PROCS]];
+      (f.sede?[f.sede]:SEDES).forEach(s=>{
+        const bs=becados().filter(u=>u.sede===s&&(!f.cohorte||u.cohorte===f.cohorte));
+        const ps=procs.filter(p=>USERS[p.username]?.sede===s);
+        const byTipo={};PROCS.forEach(t=>byTipo[t]=0);ps.forEach(p=>{byTipo[p.tipo]=(byTipo[p.tipo]||0)+1;});
+        rows.push([s,bs.length,[...new Set(bs.map(u=>u.cohorte))].sort().join(', '),ps.length,...PROCS.map(t=>byTipo[t])]);
+      });
+      wb=makeWB(XLSX,'Resumen por sede',rows);filename=`medproc_resumen_sedes_${ts}.xlsx`;
+    }
+
+    XLSX.writeFile(wb,filename);
+    toast('Descargado: '+filename);
+  }catch(e){toast('Error al exportar: '+e.message);}
+  finally{hideLoading();}
+}
+
+// ─── Gestión de usuarios ───────────────────────────────────────────────────────
+function renderUserList(){
+  const fr=document.getElementById('uf-rol')?.value||'';
+  const fc=document.getElementById('uf-cohorte')?.value||'';
+  const q=(document.getElementById('uf-search')?.value||'').toLowerCase();
+  const showPass=document.getElementById('uf-show-pass')?.checked;
+  const allUsers=Object.values(USERS).filter(u=>
+    (!fr||u.role===fr)&&(!fc||u.cohorte===fc)&&(!q||u.name.toLowerCase().includes(q)||u.username.includes(q))
+  ).sort((a,b)=>{
+    const ra=a.role==='coord'?0:1,rb=b.role==='coord'?0:1;
+    if(ra!==rb)return ra-rb;
+    return(a.cohorte||'').localeCompare(b.cohorte||'')||a.name.localeCompare(b.name);
+  });
+  const el=document.getElementById('user-list');if(!el)return;
+  if(!allUsers.length){el.innerHTML='<div class="empty" style="padding:1.5rem"><i class="ti ti-users"></i><p>Sin resultados</p></div>';return;}
+  el.innerHTML=allUsers.map(u=>{
+    const isCoord=u.role==='coord';
+    return`<div class="row-flex">
+      <div class="bav" style="background:${isCoord?'var(--purple-light)':'var(--brand-light)'};color:${isCoord?'var(--purple)':'var(--brand)'};width:30px;height:30px;font-size:9px">${u.initials||initials(u.name)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:500;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.name} <span class="badge ${isCoord?'b-purple':'b-blue'}" style="margin-left:4px">${isCoord?'Coordinador':'Becado'}</span></div>
+        <div style="font-size:10px;color:var(--txt3);display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span>@${u.username}</span>
+          ${u.cohorte?`<span class="tag-c">${u.cohorte}</span>`:''}
+          ${showPass?`<span class="pass-cell" onclick="copyPass('${u.pass}',this)" title="Clic para copiar"><i class="ti ti-key" style="font-size:10px"></i>${u.pass}</span>`:''}
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--txt3);text-align:right;flex-shrink:0">
+        ${(u.sede||'').replace('Hospital ','H. ')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function copyPass(pass,el){
+  navigator.clipboard.writeText(pass).then(()=>{
+    const orig=el.innerHTML;
+    el.innerHTML='<i class="ti ti-check" style="font-size:10px;color:var(--teal)"></i>Copiada';
+    setTimeout(()=>{el.innerHTML=orig;},1500);
+  });
+}
+
+async function crearBecado(){
+  const nombre=document.getElementById('nu-nombre').value.trim();
+  const cohorte=document.getElementById('nu-cohorte').value;
+  const sede=document.getElementById('nu-sede').value;
+  const user=document.getElementById('nu-user').value.trim().toLowerCase();
+  const pass=document.getElementById('nu-pass').value.trim();
+  if(!nombre||!user||!pass||!cohorte){toast('Completa todos los campos');return;}
+  if(USERS[user]){toast('El usuario "'+user+'" ya existe');return;}
+  showLoading('Creando becado...');
+  try{
+    const data={pass,name:nombre,role:'becado',cohorte,sede,initials:initials(nombre)};
+    await setDoc(doc(db,'users',user),data);
+    USERS[user]={username:user,...data};
+    ['nu-nombre','nu-user','nu-pass'].forEach(id=>document.getElementById(id).value='');
+    populateCoordFilters();renderUserList();
+    toast('Becado '+nombre+' creado');
+  }catch(e){toast('Error: '+e.message);}
+  finally{hideLoading();}
+}
+
+async function crearCoord(){
+  const nombre=document.getElementById('nc-nombre').value.trim();
+  const user=document.getElementById('nc-user').value.trim().toLowerCase();
+  const pass=document.getElementById('nc-pass').value.trim();
+  if(!nombre||!user||!pass){toast('Completa todos los campos');return;}
+  if(USERS[user]){toast('El usuario "'+user+'" ya existe');return;}
+  showLoading('Creando coordinador...');
+  try{
+    const data={pass,name:nombre,role:'coord',cohorte:null,sede:null,initials:initials(nombre)};
+    await setDoc(doc(db,'users',user),data);
+    USERS[user]={username:user,...data};
+    ['nc-nombre','nc-user','nc-pass'].forEach(id=>document.getElementById(id).value='');
+    renderUserList();toast('Coordinador '+nombre+' creado');
+  }catch(e){toast('Error: '+e.message);}
+  finally{hideLoading();}
+}
+
+// ─── Exponer funciones globalmente ─────────────────────────────────────────────
+window.doLogin=doLogin;window.logout=logout;window.btab=btab;window.ctab=ctab;
+window.registrar=registrar;window.limpiarForm=limpiarForm;window.renderHist=renderHist;
+window.renderBecado=renderBecado;window.renderBecadoDetalle=renderBecadoDetalle;
+window.renderSedes=renderSedes;window.renderProcs=renderProcs;window.renderDetalle=renderDetalle;
+window.renderExport=renderExport;window.exportXLSX=exportXLSX;
+window.renderUserList=renderUserList;window.crearBecado=crearBecado;window.crearCoord=crearCoord;
+window.copyPass=copyPass;
+
+// ─── Init ──────────────────────────────────────────────────────────────────────
+showLoading('Conectando con la base de datos...');
+try{
+  await loadUsers();
+  document.getElementById('scr-login').classList.add('active');
+}catch(e){
+  document.getElementById('scr-login').classList.add('active');
+  console.error('Error cargando usuarios:',e);
+}finally{
+  hideLoading();
+}
+</script>
+</body>
+</html>
