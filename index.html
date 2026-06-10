@@ -791,14 +791,14 @@ async function renderGeneral(){
 function renderAnualChart(procs){
   const byYear={};procs.forEach(p=>{const y=p.fecha?p.fecha.slice(0,4):null;if(y)byYear[y]=(byYear[y]||0)+1;});
   const ctx=document.getElementById('ch-anual');if(!ctx)return;
-  if(anualChart)anualChart.destroy();
+  if(anualChart){anualChart.destroy();anualChart=null;}
   if(!Object.keys(byYear).length){
-    const c=ctx.getContext('2d');c.clearRect(0,0,ctx.width,ctx.height);
-    c.fillStyle='#7a8799';c.font='13px sans-serif';c.textAlign='center';
-    c.fillText('Sin procedimientos aún',ctx.width/2,ctx.height/2);return;
+    ctx.parentElement.innerHTML='<p style="font-size:12px;color:var(--txt3);padding:1rem 0;text-align:center">Sin procedimientos aún</p>';return;
   }
   const labels=Object.keys(byYear).sort();
-  anualChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Procedimientos',data:labels.map(y=>byYear[y]),backgroundColor:'#003087',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
+  setTimeout(()=>{
+    anualChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Procedimientos',data:labels.map(y=>byYear[y]),backgroundColor:'#003087',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
+  },200);
 }
 
 async function renderBecado(){
@@ -883,17 +883,25 @@ async function renderProcs(){
     const byTipo={};PROCS.forEach(p=>byTipo[p]=0);procs.forEach(p=>{byTipo[p.tipo]=(byTipo[p.tipo]||0)+1;});
     barChart(document.getElementById('cp-chart'),byTipo);
     const ctx=document.getElementById('ch-grouped');if(!ctx)return;
-    if(groupedChart)groupedChart.destroy();
+    if(groupedChart){groupedChart.destroy();groupedChart=null;}
     const topUsers=Object.entries(
       procs.reduce((a,p)=>{a[p.username]=(a[p.username]||0)+1;return a;},{})
-    ).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([u])=>u);
-    if(!topUsers.length)return;
+    ).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([u])=>u);
+    if(!topUsers.length){
+      ctx.parentElement.innerHTML='<p style="font-size:12px;color:var(--txt3);padding:1rem 0;text-align:center">Sin procedimientos registrados con estos filtros</p>';
+      return;
+    }
     const labels=PROCS.slice(0,-1);
-    groupedChart=new Chart(ctx,{type:'bar',data:{labels,datasets:topUsers.map((u,i)=>{
+    const datasets=topUsers.map((u,i)=>{
       const up=procs.filter(p=>p.username===u);
       const nm=USERS[u]?.name||u;
-      return{label:nm.split(' ')[0]+' '+nm.split(' ')[1]?.[0]+'.',data:labels.map(t=>up.filter(p=>p.tipo===t).length),backgroundColor:FILLS[i%FILLS.length]+'cc',borderRadius:3};
-    })},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{autoSkip:false,maxRotation:30,font:{size:10}}},y:{beginAtZero:true}}}});
+      const parts=nm.split(' ');
+      const label=parts[0]+(parts[1]?' '+parts[1][0]+'.':''  );
+      return{label,data:labels.map(t=>up.filter(p=>p.tipo===t).length),backgroundColor:FILLS[i%FILLS.length]+'cc',borderRadius:3};
+    });
+    setTimeout(()=>{
+      groupedChart=new Chart(ctx,{type:'bar',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:12}}},scales:{x:{ticks:{autoSkip:false,maxRotation:30,font:{size:10}}},y:{beginAtZero:true}}}});
+    },200);
   }finally{hideLoading();}
 }
 
