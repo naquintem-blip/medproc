@@ -579,10 +579,11 @@ async function loadUsers(){
   const snap = await getDocs(collection(db,'users'));
   USERS={};
   snap.forEach(d=>{ USERS[d.id]={username:d.id,...d.data()}; });
-  // Si no hay usuarios, sembrar los iniciales
-  if(Object.keys(USERS).length===0){
-    showLoading('Primera vez: creando usuarios...');
-    for(const [uid,data] of Object.entries(USUARIOS_INICIALES)){
+  // Solo crear usuarios que NO existen en Firebase — nunca sobreescribir
+  const faltantes = Object.entries(USUARIOS_INICIALES).filter(([uid])=>!USERS[uid]);
+  if(faltantes.length > 0){
+    showLoading('Inicializando usuarios nuevos...');
+    for(const [uid,data] of faltantes){
       await setDoc(doc(db,'users',uid),{...data,initials:initials(data.name)});
       USERS[uid]={username:uid,...data,initials:initials(data.name)};
     }
