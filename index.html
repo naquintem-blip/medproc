@@ -350,11 +350,10 @@ body{font-family:var(--font);background:var(--surf2);color:var(--txt);font-size:
 <div id="toast" class="toast"></div>
 
 <!-- Firebase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection, addDoc, query, where, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-// Chart.js cargado via script tag clásico
+import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/+esm';
 
 const firebaseConfig = {
   apiKey: "AIzaSyClTJHoT35RNj5Yg5uvVCSoGS11QvFALxs",
@@ -579,15 +578,22 @@ async function loadUsers(){
   const snap = await getDocs(collection(db,'users'));
   USERS={};
   snap.forEach(d=>{ USERS[d.id]={username:d.id,...d.data()}; });
-  // Solo crear usuarios que NO existen en Firebase — nunca sobreescribir
-  const faltantes = Object.entries(USUARIOS_INICIALES).filter(([uid])=>!USERS[uid]);
-  if(faltantes.length > 0){
-    showLoading('Inicializando usuarios nuevos...');
-    for(const [uid,data] of faltantes){
-      await setDoc(doc(db,'users',uid),{...data,initials:initials(data.name)});
-      USERS[uid]={username:uid,...data,initials:initials(data.name)};
+  const totalEnFirebase = Object.keys(USERS).length;
+  // PROTECCIÓN TRIPLE contra glitches de red y sobrescritura accidental:
+  // 1. Solo actuar si Firebase retornó CERO usuarios (no si retornó pocos)
+  // 2. Solo crear usuarios que NO existen (faltantes), nunca sobreescribir
+  // 3. Verificar que realmente es primera vez (todos los usuarios faltan)
+  if(totalEnFirebase === 0){
+    const faltantes = Object.entries(USUARIOS_INICIALES).filter(([uid])=>!USERS[uid]);
+    if(faltantes.length === Object.keys(USUARIOS_INICIALES).length){
+      showLoading('Primera vez: creando usuarios...');
+      for(const [uid,data] of faltantes){
+        await setDoc(doc(db,'users',uid),{...data,initials:initials(data.name)});
+        USERS[uid]={username:uid,...data,initials:initials(data.name)};
+      }
     }
   }
+  // Si Firebase retorna aunque sea 1 usuario, nunca se toca nada
 }
 
 // ─── Login ────────────────────────────────────────────────────────────────────
@@ -793,14 +799,14 @@ async function renderGeneral(){
 function renderAnualChart(procs){
   const byYear={};procs.forEach(p=>{const y=p.fecha?p.fecha.slice(0,4):null;if(y)byYear[y]=(byYear[y]||0)+1;});
   const ctx=document.getElementById('ch-anual');if(!ctx)return;
-  if(anualChart){anualChart.destroy();anualChart=null;}
+  if(anualChart)anualChart.destroy();
   if(!Object.keys(byYear).length){
-    ctx.parentElement.innerHTML='<p style="font-size:12px;color:var(--txt3);padding:1rem 0;text-align:center">Sin procedimientos aún</p>';return;
+    const c=ctx.getContext('2d');c.clearRect(0,0,ctx.width,ctx.height);
+    c.fillStyle='#7a8799';c.font='13px sans-serif';c.textAlign='center';
+    c.fillText('Sin procedimientos aún',ctx.width/2,ctx.height/2);return;
   }
   const labels=Object.keys(byYear).sort();
-  setTimeout(()=>{
-    anualChart=new window.Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Procedimientos',data:labels.map(y=>byYear[y]),backgroundColor:'#003087',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
-  },200);
+  anualChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Procedimientos',data:labels.map(y=>byYear[y]),backgroundColor:'#003087',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
 }
 
 async function renderBecado(){
@@ -885,25 +891,17 @@ async function renderProcs(){
     const byTipo={};PROCS.forEach(p=>byTipo[p]=0);procs.forEach(p=>{byTipo[p.tipo]=(byTipo[p.tipo]||0)+1;});
     barChart(document.getElementById('cp-chart'),byTipo);
     const ctx=document.getElementById('ch-grouped');if(!ctx)return;
-    if(groupedChart){groupedChart.destroy();groupedChart=null;}
+    if(groupedChart)groupedChart.destroy();
     const topUsers=Object.entries(
       procs.reduce((a,p)=>{a[p.username]=(a[p.username]||0)+1;return a;},{})
-    ).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([u])=>u);
-    if(!topUsers.length){
-      ctx.parentElement.innerHTML='<p style="font-size:12px;color:var(--txt3);padding:1rem 0;text-align:center">Sin procedimientos registrados con estos filtros</p>';
-      return;
-    }
+    ).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([u])=>u);
+    if(!topUsers.length)return;
     const labels=PROCS.slice(0,-1);
-    const datasets=topUsers.map((u,i)=>{
+    groupedChart=new Chart(ctx,{type:'bar',data:{labels,datasets:topUsers.map((u,i)=>{
       const up=procs.filter(p=>p.username===u);
       const nm=USERS[u]?.name||u;
-      const parts=nm.split(' ');
-      const label=parts[0]+(parts[1]?' '+parts[1][0]+'.':''  );
-      return{label,data:labels.map(t=>up.filter(p=>p.tipo===t).length),backgroundColor:FILLS[i%FILLS.length]+'cc',borderRadius:3};
-    });
-    setTimeout(()=>{
-      groupedChart=new window.Chart(ctx,{type:'bar',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:12}}},scales:{x:{ticks:{autoSkip:false,maxRotation:30,font:{size:10}}},y:{beginAtZero:true}}}});
-    },200);
+      return{label:nm.split(' ')[0]+' '+nm.split(' ')[1]?.[0]+'.',data:labels.map(t=>up.filter(p=>p.tipo===t).length),backgroundColor:FILLS[i%FILLS.length]+'cc',borderRadius:3};
+    })},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{autoSkip:false,maxRotation:30,font:{size:10}}},y:{beginAtZero:true}}}});
   }finally{hideLoading();}
 }
 
