@@ -350,10 +350,11 @@ body{font-family:var(--font);background:var(--surf2);color:var(--txt);font-size:
 <div id="toast" class="toast"></div>
 
 <!-- Firebase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection, addDoc, query, where, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/+esm';
+// Chart.js cargado via script tag clásico
 
 const firebaseConfig = {
   apiKey: "AIzaSyClTJHoT35RNj5Yg5uvVCSoGS11QvFALxs",
@@ -806,7 +807,7 @@ function renderAnualChart(procs){
     c.fillText('Sin procedimientos aún',ctx.width/2,ctx.height/2);return;
   }
   const labels=Object.keys(byYear).sort();
-  anualChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Procedimientos',data:labels.map(y=>byYear[y]),backgroundColor:'#003087',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
+  anualChart=new window.Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Procedimientos',data:labels.map(y=>byYear[y]),backgroundColor:'#003087',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
 }
 
 async function renderBecado(){
@@ -897,7 +898,7 @@ async function renderProcs(){
     ).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([u])=>u);
     if(!topUsers.length)return;
     const labels=PROCS.slice(0,-1);
-    groupedChart=new Chart(ctx,{type:'bar',data:{labels,datasets:topUsers.map((u,i)=>{
+    groupedChart=new window.Chart(ctx,{type:'bar',data:{labels,datasets:topUsers.map((u,i)=>{
       const up=procs.filter(p=>p.username===u);
       const nm=USERS[u]?.name||u;
       return{label:nm.split(' ')[0]+' '+nm.split(' ')[1]?.[0]+'.',data:labels.map(t=>up.filter(p=>p.tipo===t).length),backgroundColor:FILLS[i%FILLS.length]+'cc',borderRadius:3};
