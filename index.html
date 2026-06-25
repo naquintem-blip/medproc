@@ -576,25 +576,12 @@ function barChart(el,data){
 
 // ─── Firebase: cargar usuarios ────────────────────────────────────────────────
 async function loadUsers(){
+  // Carga usuarios desde Firebase — NUNCA crea ni modifica usuarios existentes
   const snap = await getDocs(collection(db,'users'));
   USERS={};
   snap.forEach(d=>{ USERS[d.id]={username:d.id,...d.data()}; });
-  const totalEnFirebase = Object.keys(USERS).length;
-  // PROTECCIÓN TRIPLE contra glitches de red y sobrescritura accidental:
-  // 1. Solo actuar si Firebase retornó CERO usuarios (no si retornó pocos)
-  // 2. Solo crear usuarios que NO existen (faltantes), nunca sobreescribir
-  // 3. Verificar que realmente es primera vez (todos los usuarios faltan)
-  if(totalEnFirebase === 0){
-    const faltantes = Object.entries(USUARIOS_INICIALES).filter(([uid])=>!USERS[uid]);
-    if(faltantes.length === Object.keys(USUARIOS_INICIALES).length){
-      showLoading('Primera vez: creando usuarios...');
-      for(const [uid,data] of faltantes){
-        await setDoc(doc(db,'users',uid),{...data,initials:initials(data.name)});
-        USERS[uid]={username:uid,...data,initials:initials(data.name)};
-      }
-    }
-  }
-  // Si Firebase retorna aunque sea 1 usuario, nunca se toca nada
+  // Si por algún error de red no llegaron usuarios, NO hacer nada
+  // Los usuarios ya existen en Firebase y se cargarán en el próximo intento
 }
 
 // ─── Login ────────────────────────────────────────────────────────────────────
